@@ -55,20 +55,25 @@ import DownloadPage from "@/components/DownloadPage.vue";
 import {
   Edit,
   Download,
-  WindPower,
   PictureRounded,
 } from "@element-plus/icons-vue";
 import { ref } from "vue";
+
+interface Album {
+  title: string;
+  num: number;
+}
+
 const stepActive = ref(0);
 const qqGroupNum = ref("");
-const qqAlbumList = ref<any[]>([]);
-const qqSelectAlbumList = ref<any[]>([]);
-const getQQAlbumList = (list: any) => {
+const qqAlbumList = ref<Album[]>([]);
+const qqSelectAlbumList = ref<Album[]>([]);
+const getQQAlbumList = (list: Album[]) => {
   qqAlbumList.value = list;
   stepActive.value = 1;
   qqSelectAlbumList.value = [];
 };
-const setSelectAlbumList = (list: any) => {
+const setSelectAlbumList = (list: Album[]) => {
   qqSelectAlbumList.value = list;
 
 };

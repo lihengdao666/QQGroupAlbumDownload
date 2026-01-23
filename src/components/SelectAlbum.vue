@@ -34,17 +34,24 @@
 <script lang="ts" setup>
 import { defineProps, defineEmits, toRaw, ref, onMounted } from "vue";
 import type { TableInstance } from "element-plus";
+
+interface Album {
+  title: string;
+  num: number;
+}
+
 // eslint-disable-next-line vue/no-setup-props-destructure
 const props = defineProps({
   qqAlbumList: {
-    type: Array,
+    type: Array as PropType<Album[]>,
     required: true,
   },
   selectAlbumList: {
-    type: Array,
+    type: Array as PropType<Album[]>,
     required: true,
   },
 });
+
 const multipleTableRef = ref<TableInstance>();
 onMounted(() => {
   props.selectAlbumList.forEach((item) => {
@@ -59,7 +66,7 @@ const emit = defineEmits(["backPage", "setSelectAlbumList", "startDownload"]);
 const backPage = () => {
   emit("backPage");
 };
-const handleSelectionChange = (val: any[]) => {
+const handleSelectionChange = (val: Album[]) => {
   emit("setSelectAlbumList", toRaw(val));
 };
 const startDownload = () => {

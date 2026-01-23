@@ -1,6 +1,6 @@
 {
   "name": "qq-album-download",
-  "version": "0.1.5",
+  "version": "0.1.15",
   "description": "qq-album-download",
   "author": "lihengdao",
   "main": "main.js",
@@ -12,6 +12,13 @@
     "win": {
       "target": [
         "portable"
+      ],
+      "artifactName": "${productName} ${version}.${ext}"
+    },
+    "mac": {
+      "icon": "logo_512.png",
+      "target": [
+        "dmg"
       ],
       "artifactName": "${productName} ${version}.${ext}"
     }

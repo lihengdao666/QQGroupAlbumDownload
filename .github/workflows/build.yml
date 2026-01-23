@@ -1,4 +1,4 @@
-name: Build
+name: Build and Release
 
 on:
   workflow_dispatch:
@@ -8,40 +8,53 @@ on:
 
 jobs:
   release:
-    name: build and release electron app
+    name: Build and Release Electron App
     runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [windows-latest,macos-latest]
 
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v3.0.0
+        uses: actions/checkout@v4.1.1
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3.0.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.0
         with:
-          node-version: "16"
+          node-version: "20"
+          cache: 'npm'
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm ci --legacy-peer-deps
+          # Verify Electron installation
+          npx electron --version || npm rebuild
 
       - name: Build Electron App
         run: npm run build && npm run pack
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cleanup Artifacts
         shell: pwsh
         run: |
           if ("${{ matrix.os }}" -eq "windows-latest") {
-            npx rimraf "dist/!(*.exe)"
+            # Keep only .exe files on Windows
+            Get-ChildItem "dist" -Exclude "*.exe" | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
           } elseif ("${{ matrix.os }}" -eq "macos-latest") {
-            npx rimraf "dist/!(*.dmg)"
+            # Keep only .dmg files on macOS
+            Get-ChildItem "dist" -Exclude "*.dmg" | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
           }
 
-      - name: Release
-        uses: softprops/action-gh-release@v2
+      - name: Extract tag name
+        id: tag
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2.0.8
         with:
           files: "dist/**"
           tag_name: ${{ steps.tag.outputs.tag }}
+          generate_release_notes: true

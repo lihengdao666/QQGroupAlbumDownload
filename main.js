@@ -1,6 +1,7 @@
 const { app, BrowserWindow, dialog } = require("electron");
 const { setCookies, setTk, setQQ } = require("./qqCore");
-require("./ipcMain.js");
+// 延迟加载ipcMain，只在需要时加载
+// require("./ipcMain.js");
 const path = require("node:path");
 
 let loginWindow;
@@ -43,6 +44,9 @@ function createMainWindow() {
   mainWindow.on("closed", function () {
     loginWindow = null;
   });
+
+  // 只在主窗口创建后才加载ipcMain模块
+  require("./ipcMain.js");
 }
 
 function createWindow() {

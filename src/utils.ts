@@ -1,7 +1,7 @@
 import { toRaw, isRef, isReactive, isProxy } from "vue";
 
-export function deepToRaw<T extends Record<string, any>>(sourceObj: T): T {
-  const objectIterator = (input: any): any => {
+export function deepToRaw<T extends Record<string, unknown>>(sourceObj: T): T {
+  const objectIterator = (input: unknown): unknown => {
     if (Array.isArray(input)) {
       return input.map((item) => objectIterator(item));
     }
@@ -10,12 +10,13 @@ export function deepToRaw<T extends Record<string, any>>(sourceObj: T): T {
     }
     if (input && typeof input === "object") {
       return Object.keys(input).reduce((acc, key) => {
-        acc[key as keyof typeof acc] = objectIterator(input[key]);
+        const value = objectIterator((input as Record<string, unknown>)[key]);
+        (acc as Record<string, unknown>)[key] = value;
         return acc;
       }, {} as T);
     }
     return input;
   };
 
-  return objectIterator(sourceObj);
+  return objectIterator(sourceObj) as T;
 }
