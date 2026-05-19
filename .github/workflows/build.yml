@@ -10,6 +10,8 @@ jobs:
   release:
     name: build and release electron app
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
 
     strategy:
       fail-fast: false
@@ -43,5 +45,8 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v3.0.0
         with:
-          files: "dist/**"
+          working_directory: dist
+          files: |
+            QQGroupAlbumDownload*.exe
+            QQGroupAlbumDownload*.dmg
           tag_name: ${{ steps.tag.outputs.tag }}
