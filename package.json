@@ -9,6 +9,7 @@
     "copyright": "LiHengDao",
     "icon": "logo.ico",
     "productName": "QQGroupAlbumDownload",
+    "publish": null,
     "win": {
       "target": [
         "portable"
