@@ -27,6 +27,13 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Get tag
+        id: tag
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
       - name: Install Dependencies
         run: npm install
 
