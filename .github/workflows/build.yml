@@ -10,6 +10,8 @@ jobs:
   release:
     name: build and release electron app
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
 
     strategy:
       fail-fast: false
@@ -18,12 +20,19 @@ jobs:
 
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v3.0.0
+        uses: actions/checkout@v6.0.2
 
       - name: Install Node.js
-        uses: actions/setup-node@v3.0.0
+        uses: actions/setup-node@v6.4.0
         with:
-          node-version: "16"
+          node-version: "22"
+
+      - name: Get tag
+        id: tag
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
       - name: Install Dependencies
         run: npm install
@@ -41,7 +50,10 @@ jobs:
           }
 
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3.0.0
         with:
-          files: "dist/**"
+          working_directory: dist
+          files: |
+            QQGroupAlbumDownload*.exe
+            QQGroupAlbumDownload*.dmg
           tag_name: ${{ steps.tag.outputs.tag }}
