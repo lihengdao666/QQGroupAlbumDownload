@@ -7,10 +7,10 @@
   "build": {
     "appId": "qq.album.download",
     "copyright": "LiHengDao",
-    "icon": "src/assets/logo.png",
+    "icon": "build/icon.png",
     "productName": "QQGroupAlbumDownload",
     "win": {
-      "icon": "public/favicon.ico",
+      "icon": "build/icon.ico",
       "target": [
         "portable"
       ],
