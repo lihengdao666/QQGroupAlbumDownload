@@ -12,6 +12,11 @@
         <el-table-column align="center" type="selection" />
         <el-table-column align="center" prop="title" label="名称" />
         <el-table-column align="center" prop="num" label="数量" />
+        <el-table-column align="center" label="上传时间">
+          <template #default="scope">
+            {{ formatTime(scope.row.uploadTime) }}
+          </template>
+        </el-table-column>
       </el-table>
     </el-scrollbar>
   </div>
@@ -56,6 +61,13 @@ onMounted(() => {
     })
 });
 const emit = defineEmits(["backPage", "setSelectAlbumList", "startDownload"]);
+const formatTime = (ts: number | null | undefined) => {
+  if (!ts) return "-";
+  const d = new Date(Number(ts));
+  if (isNaN(d.getTime())) return "-";
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
 const backPage = () => {
   emit("backPage");
 };
